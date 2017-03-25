@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title></title>
+        <style>
+            img{
+                margin: 3px;
+            }
+            ol li{
+                display: inline-block;
+                margin: 5px;
+            }
+        </style>
+    </head>
+    <body>
+       <div style="width: 400px; margin: 0 auto;">
+           <ol>
+                <li value="1"><a href="#">1</a></li>
+                <li value="2"><a href="#">2</a></li>
+                <li value="3"><a href="#">3</a></li>
+                <li value="4"><a href="#">4</a></li>
+            </ol>
+       </div>
+        <div id="movies"></div>
+
+
+       <script src="jquery-3.1.0.min.js"></script>
+       <script>
+
+           $(document).ready(function () {
+               var yts_api = "https://yts.ag/api/v2/list_movies.jsonp";
+               var rating = prompt("Minimal movie rating: ");
+               var req = {
+                   "minimum_rating": rating,
+                   "page": 1
+               }
+               loadMovies(req.page);
+
+               $("ol li a").on("click", function () {
+
+                   $("#movies").empty();
+                   loadMovies($(this).parent().val());
+               });
+
+               function loadMovies(pageNum) {
+
+                   req.page = pageNum;
+                   $.getJSON(yts_api, req, function (response) {
+
+                       console.log(response);
+                       var mov = $("#movies");
+
+                       $.each(response.data.movies, function (key, value) {
+
+                           mov.append("<img src= '" + value.medium_cover_image + "'/>");
+
+                       });
+                   });
+               };
+           });
+        </script>
+    </body>
+</html>

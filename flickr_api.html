@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title></title>
+        <style>
+            h1{
+                position: relative;
+                text-align: center;
+            }
+            #divX{
+                position: absolute;
+                display: inline-block;
+                text-align: center;
+                right: 0;
+            }
+            #spanX{
+                cursor: pointer;
+                display: none;
+            }
+            .img_div{
+                width: 260px;
+                display: inline-block;
+                position: relative;
+            }
+            img{
+                margin: 3px;
+                transition: all 0.3s;
+                cursor: pointer;
+                position: relative;
+            }
+        </style>
+        <script src="jquery-3.1.0.min.js"></script>
+        <script>
+
+            $(document).ready(function () {
+
+                var flickr_api = "http://api.flickr.com/services/feeds/photos_public.gne?jsoncallback=?";
+                var user_query = prompt("Unesi pojam(tag) za slike: ", "tag");
+
+                var req = {
+                    tags: user_query,
+                    format: "json"
+                }
+
+                $.getJSON(flickr_api, req, function (response) {
+
+                    var db = $(document.body);
+
+                    var result = "<h1>" + response.title + "<div id='divX'><span id='spanX'>Close (X)</span></div></h1>";
+                    result += "<h2>Ukupno slika označeno: " + response.items.length + "</h2>";
+
+                    for (var i = 0; i < response.items.length; i++) {
+                        result += "<div class='img_div'><img title= '" + response.items[i].title + "' src = '" +
+                                    response.items[i].media.m + "'/></div>";
+                    }
+                    db.append(result);
+                    var spanX = $("#spanX");
+
+
+                    $('img').on("click", function () {
+
+                        var image = $(this);
+                        spanX.css("display", "block");
+
+                        $(this).css(
+                        {
+                            "transform": "scale(2)",
+                            "z-index": 1,
+                            "border": "2px solid black"
+                        });
+
+                        spanX.on("click", function () {
+                            $(this).css("display", "none");
+                            image.css(
+                            {
+                                 "transform": "scale(1)",
+                                 "border": "none",
+                                 "z-index": 0
+                            });
+                        });
+                    });
+                });
+            })
+        </script>
+    </head>
+    <body>
+        <!--displayed response from Flickr-->
+        
+    </body>
+</html>
